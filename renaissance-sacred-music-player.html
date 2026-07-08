@@ -1,0 +1,1767 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Missa Perpetua ad honorem Sanctae Veronicae Giuliani</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --ink: #f7f1df;
+      --muted: #c6bda9;
+      --dim: #81796b;
+      --bg: #15110c;
+      --panel: #211b13;
+      --panel-2: #332718;
+      --line: #5a4529;
+      --gold: #c99f3f;
+      --red: #98473f;
+      --blue: #547489;
+      --green: #6f8d71;
+      --violet: #89729e;
+      --shadow: rgba(0, 0, 0, 0.34);
+      --radius: 8px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      height: 100%;
+    }
+
+    body {
+      margin: 0;
+      background:
+        linear-gradient(180deg, rgba(31, 23, 15, 0.97), rgba(10, 9, 7, 1)),
+        repeating-linear-gradient(90deg, rgba(255,255,255,0.025) 0 1px, transparent 1px 5px);
+      color: var(--ink);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      letter-spacing: 0;
+    }
+
+    button,
+    input {
+      font: inherit;
+    }
+
+    button {
+      border: 1px solid var(--line);
+      background: #28241b;
+      color: var(--ink);
+      cursor: pointer;
+    }
+
+    button:hover {
+      border-color: #776844;
+      background: #342e22;
+    }
+
+    button:active {
+      transform: translateY(1px);
+    }
+
+    button:focus-visible,
+    input:focus-visible {
+      outline: 2px solid var(--gold);
+      outline-offset: 2px;
+    }
+
+    .app {
+      height: 100vh;
+      display: grid;
+      grid-template-rows: auto 1fr;
+      overflow: hidden;
+    }
+
+    .topbar {
+      position: relative;
+      z-index: 4;
+      display: grid;
+      grid-template-columns: 1fr;
+      justify-items: center;
+      align-items: center;
+      gap: 12px;
+      padding: 16px 28px 14px;
+      border-bottom: 1px solid rgba(201, 159, 63, 0.34);
+      background: rgba(24, 17, 11, 0.94);
+    }
+
+    .identity {
+      display: grid;
+      justify-items: center;
+      gap: 5px;
+      min-width: 0;
+      text-align: center;
+    }
+
+    h1 {
+      margin: 0;
+      color: #fff8e7;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: clamp(1.8rem, 2.8vw, 3rem);
+      font-weight: 500;
+      line-height: 1;
+      white-space: nowrap;
+    }
+
+    .subtitle {
+      display: block;
+      min-width: 0;
+      color: #d8c58e;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: clamp(0.82rem, 1.45vw, 1.05rem);
+      font-style: italic;
+      line-height: 1.2;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .transport {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      justify-content: center;
+    }
+
+    #regenerate,
+    #stop {
+      display: none;
+    }
+
+    .icon-btn {
+      width: 58px;
+      height: 58px;
+      display: inline-grid;
+      place-items: center;
+      border-radius: 50%;
+      font-size: 1.18rem;
+      line-height: 1;
+    }
+
+    .icon-btn.primary {
+      color: #17130d;
+      background: var(--gold);
+      border-color: #edcf78;
+      font-weight: 800;
+      font-family: Georgia, "Times New Roman", serif;
+    }
+
+    .main {
+      width: min(860px, 100%);
+      min-height: 0;
+      margin: 0 auto;
+      padding: 14px 18px 18px;
+      display: grid;
+      grid-template-columns: 1fr;
+      grid-template-rows: minmax(0, 1fr);
+    }
+
+    .side {
+      min-width: 0;
+    }
+
+    .side {
+      display: grid;
+      align-content: stretch;
+      gap: 14px;
+      min-height: 0;
+      height: 100%;
+    }
+
+    .side > section:not(.devotion) {
+      display: none;
+    }
+
+    .panel {
+      background: linear-gradient(180deg, rgba(43, 32, 20, 0.98), rgba(23, 17, 12, 0.98));
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: 0 14px 28px var(--shadow);
+    }
+
+    .panel-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 15px 10px;
+      border-bottom: 1px solid rgba(208, 173, 79, 0.18);
+    }
+
+    .panel-title {
+      margin: 0;
+      color: #fff4d2;
+      font-size: 0.84rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      min-height: 24px;
+      padding: 3px 8px;
+      border: 1px solid rgba(208, 173, 79, 0.34);
+      border-radius: 999px;
+      color: #ead28a;
+      font-size: 0.78rem;
+      white-space: nowrap;
+    }
+
+    .mass-text {
+      padding: 16px 15px 18px;
+      display: grid;
+      gap: 14px;
+    }
+
+    .devotion {
+      overflow: hidden;
+      align-self: stretch;
+      display: grid;
+      grid-template-rows: minmax(0, 1fr) auto;
+      place-items: center;
+      min-height: 0;
+      height: 100%;
+      background:
+        radial-gradient(circle at 50% 30%, rgba(218, 190, 115, 0.16), transparent 36%),
+        #17110c;
+    }
+
+    .devotion img {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      object-position: 50% 50%;
+      filter: sepia(0.12) saturate(0.88) contrast(0.95);
+    }
+
+    .devotional-line {
+      width: 100%;
+      min-width: 0;
+      padding: 12px 14px 14px;
+      border-top: 1px solid rgba(201, 159, 63, 0.28);
+      color: #efe4c9;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: clamp(1rem, 1.8vw, 1.32rem);
+      font-variant: small-caps;
+      letter-spacing: 0.04em;
+      line-height: 1.2;
+      text-align: center;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      background: rgba(16, 11, 7, 0.64);
+    }
+
+    .mass-part {
+      color: #fff8e8;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: clamp(1.45rem, 2vw, 2rem);
+      line-height: 1.1;
+    }
+
+    .latin {
+      color: #d9cfba;
+      line-height: 1.58;
+      font-size: 0.97rem;
+    }
+
+    .metadata {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      border-top: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .datum {
+      min-width: 0;
+      padding: 12px 15px;
+      border-right: 1px solid rgba(255,255,255,0.08);
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .datum:nth-child(2n) {
+      border-right: 0;
+    }
+
+    .label {
+      display: block;
+      margin-bottom: 4px;
+      color: var(--dim);
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .value {
+      display: block;
+      color: var(--ink);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .controls {
+      padding: 14px 15px 16px;
+      display: grid;
+      gap: 16px;
+    }
+
+    .control {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .control label {
+      color: var(--muted);
+      font-size: 0.88rem;
+    }
+
+    .readout {
+      min-width: 58px;
+      color: #f0d77b;
+      text-align: right;
+      font-variant-numeric: tabular-nums;
+    }
+
+    input[type="range"] {
+      grid-column: 1 / -1;
+      width: 100%;
+      accent-color: var(--gold);
+    }
+
+    .voice-mix {
+      padding: 12px 15px 16px;
+      display: grid;
+      gap: 10px;
+    }
+
+    .voice-row {
+      display: grid;
+      grid-template-columns: 74px 1fr 44px;
+      align-items: center;
+      gap: 10px;
+      color: var(--muted);
+      font-size: 0.85rem;
+    }
+
+    .meter {
+      height: 8px;
+      overflow: hidden;
+      border: 1px solid #29251c;
+      border-radius: 999px;
+      background: #11100d;
+    }
+
+    .meter > span {
+      display: block;
+      width: 0;
+      height: 100%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, var(--blue), var(--gold));
+      transition: width 120ms linear;
+    }
+
+    .status {
+      display: none;
+      min-height: 20px;
+      padding: 0 2px;
+      color: var(--muted);
+      font-size: 0.86rem;
+    }
+
+    @media (max-width: 920px) {
+      .app {
+        height: 100dvh;
+      }
+
+      .topbar {
+        grid-template-columns: 1fr;
+        justify-items: center;
+        gap: 10px;
+        padding: 10px 12px 12px;
+      }
+
+      .identity {
+        justify-content: center;
+      }
+
+      .main {
+        grid-template-columns: 1fr;
+        grid-template-rows: minmax(0, 1fr);
+        min-height: 0;
+        padding: 10px;
+      }
+
+      .transport {
+        justify-content: center;
+      }
+
+      .icon-btn {
+        width: 54px;
+        height: 54px;
+      }
+
+      .side {
+        align-content: stretch;
+        height: 100%;
+      }
+
+      .devotion {
+        height: 100%;
+      }
+
+      .devotion img {
+        height: 100%;
+      }
+    }
+
+    @media (max-width: 560px) {
+      .topbar {
+        padding: 8px 10px 10px;
+      }
+
+      .identity {
+        display: grid;
+        justify-items: center;
+        gap: 4px;
+      }
+
+      h1 {
+        white-space: nowrap;
+        font-size: clamp(1.55rem, 8vw, 2.25rem);
+      }
+
+      .icon-btn {
+        width: 50px;
+        height: 50px;
+      }
+
+      .main {
+        grid-template-rows: minmax(0, 1fr);
+        padding: 8px;
+      }
+
+      .devotion img {
+        height: 100%;
+      }
+
+      .devotional-line {
+        font-size: clamp(0.92rem, 4.2vw, 1.1rem);
+        padding: 10px 10px 12px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header class="topbar">
+      <div class="identity">
+        <h1>Missa Perpetua</h1>
+        <div class="subtitle" id="subtitle">ad honorem Sanctae Veronicae Giuliani</div>
+      </div>
+      <div class="transport" aria-label="Transport">
+        <button class="icon-btn" id="regenerate" type="button" title="Reset continuous stream" aria-label="Reset continuous stream">↻</button>
+        <button class="icon-btn primary" id="play" type="button" title="Play" aria-label="Play">▶</button>
+        <button class="icon-btn" id="stop" type="button" title="Stop" aria-label="Stop">■</button>
+      </div>
+    </header>
+
+    <main class="main">
+      <aside class="side">
+        <section class="panel devotion">
+          <img src="veronica-giuliani.jpg" alt="Saint Veronica Giuliani">
+          <div class="devotional-line" id="devotionalLine">Ordo I · Kyrie</div>
+        </section>
+
+        <section class="panel">
+          <div class="panel-header">
+            <h2 class="panel-title">Ordinary</h2>
+            <span class="pill" id="seedPill">Ordo</span>
+          </div>
+          <div class="mass-text">
+            <div class="mass-part" id="massPart">Kyrie</div>
+            <div class="latin" id="latinText"></div>
+          </div>
+          <div class="metadata">
+            <div class="datum">
+              <span class="label">Mode</span>
+              <span class="value" id="modeName">Dorian</span>
+            </div>
+            <div class="datum">
+              <span class="label">Final</span>
+              <span class="value" id="finalName">D</span>
+            </div>
+            <div class="datum">
+              <span class="label">Cantus</span>
+              <span class="value" id="cantusVoice">Tenor</span>
+            </div>
+            <div class="datum">
+              <span class="label">Queue</span>
+              <span class="value" id="cadenceName">0 phrases</span>
+            </div>
+          </div>
+        </section>
+
+        <section class="panel">
+          <div class="panel-header">
+            <h2 class="panel-title">Chapel</h2>
+            <span class="pill" id="durationPill">streaming</span>
+          </div>
+          <div class="controls">
+            <div class="control">
+              <label for="tempo">Tactus</label>
+              <span class="readout" id="tempoReadout">64</span>
+              <input id="tempo" type="range" min="48" max="78" value="64">
+            </div>
+            <div class="control">
+              <label for="reverb">Vault</label>
+              <span class="readout" id="reverbReadout">84%</span>
+              <input id="reverb" type="range" min="45" max="96" value="84">
+            </div>
+            <div class="control">
+              <label for="breath">Air</label>
+              <span class="readout" id="breathReadout">18%</span>
+              <input id="breath" type="range" min="0" max="40" value="18">
+            </div>
+          </div>
+        </section>
+
+        <section class="panel">
+          <div class="panel-header">
+            <h2 class="panel-title">Voices</h2>
+            <span class="pill" id="texturePill">A cappella</span>
+          </div>
+          <div class="voice-mix">
+            <div class="voice-row">
+              <span>Soprano</span>
+              <div class="meter"><span id="meter-soprano"></span></div>
+              <span id="now-soprano">--</span>
+            </div>
+            <div class="voice-row">
+              <span>Alto</span>
+              <div class="meter"><span id="meter-alto"></span></div>
+              <span id="now-alto">--</span>
+            </div>
+            <div class="voice-row">
+              <span>Tenor</span>
+              <div class="meter"><span id="meter-tenor"></span></div>
+              <span id="now-tenor">--</span>
+            </div>
+            <div class="voice-row">
+              <span>Bass</span>
+              <div class="meter"><span id="meter-bass"></span></div>
+              <span id="now-bass">--</span>
+            </div>
+          </div>
+        </section>
+        <div class="status" id="status"></div>
+      </aside>
+
+    </main>
+  </div>
+
+  <script>
+    "use strict";
+
+    const NOTE_NAMES = ["C", "C#", "D", "Eb", "E", "F", "F#", "G", "Ab", "A", "Bb", "B"];
+    const KEYS = ["soprano", "alto", "tenor", "bass"];
+    const CF_KEY = "tenor";
+    const AUDIO_LOOKAHEAD_SECONDS = 5.0;
+    const SCHEDULER_INTERVAL_MS = 140;
+
+    const MASS_PARTS = [
+      {
+        name: "Kyrie",
+        text: "Kyrie eleison. Christe eleison. Kyrie eleison.",
+        syllables: ["Ky", "ri", "e", "e", "lei", "son", "Chri", "ste", "e", "lei", "son"]
+      },
+      {
+        name: "Gloria",
+        text: "Gloria in excelsis Deo, et in terra pax hominibus bonae voluntatis.",
+        syllables: ["Glo", "ri", "a", "in", "ex", "cel", "sis", "De", "o", "et", "in", "ter", "ra", "pax", "ho", "mi", "ni", "bus", "bo", "nae", "vo", "lun", "ta", "tis"]
+      },
+      {
+        name: "Credo",
+        text: "Credo in unum Deum, Patrem omnipotentem, factorem caeli et terrae.",
+        syllables: ["Cre", "do", "in", "u", "num", "De", "um", "Pa", "trem", "om", "ni", "po", "ten", "tem", "fac", "to", "rem", "cae", "li", "et", "ter", "rae"]
+      },
+      {
+        name: "Sanctus",
+        text: "Sanctus, Sanctus, Sanctus Dominus Deus Sabaoth.",
+        syllables: ["Sanc", "tus", "Sanc", "tus", "Sanc", "tus", "Do", "mi", "nus", "De", "us", "Sa", "ba", "oth"]
+      },
+      {
+        name: "Benedictus",
+        text: "Benedictus qui venit in nomine Domini.",
+        syllables: ["Be", "ne", "dic", "tus", "qui", "ve", "nit", "in", "no", "mi", "ne", "Do", "mi", "ni"]
+      },
+      {
+        name: "Agnus Dei",
+        text: "Agnus Dei, qui tollis peccata mundi, miserere nobis.",
+        syllables: ["A", "gnus", "De", "i", "qui", "tol", "lis", "pec", "ca", "ta", "mun", "di", "mi", "se", "re", "re", "no", "bis"]
+      }
+    ];
+
+    const MODES = [
+      { name: "Dorian", final: "D", finalMidi: 50, intervals: [0, 2, 3, 5, 7, 9, 10], reciting: 4 },
+      { name: "Phrygian", final: "E", finalMidi: 52, intervals: [0, 1, 3, 5, 7, 8, 10], reciting: 3 },
+      { name: "Lydian", final: "F", finalMidi: 53, intervals: [0, 2, 4, 6, 7, 9, 11], reciting: 4 },
+      { name: "Mixolydian", final: "G", finalMidi: 55, intervals: [0, 2, 4, 5, 7, 9, 10], reciting: 4 },
+      { name: "Aeolian", final: "A", finalMidi: 57, intervals: [0, 2, 3, 5, 7, 8, 10], reciting: 3 }
+    ];
+
+    const VOICES = [
+      { key: "soprano", label: "Soprano", min: 60, max: 79, center: 69, pan: -0.24, gain: 0.118, shift: 1.08, color: "#dcca70" },
+      { key: "alto", label: "Alto", min: 55, max: 72, center: 63, pan: -0.08, gain: 0.112, shift: 0.98, color: "#bd7460" },
+      { key: "tenor", label: "Tenor", min: 48, max: 67, center: 57, pan: 0.08, gain: 0.124, shift: 0.88, color: "#83adbb" },
+      { key: "bass", label: "Bass", min: 40, max: 60, center: 49, pan: 0.24, gain: 0.132, shift: 0.76, color: "#7fa579" }
+    ];
+    const VOICE_BY_KEY = Object.fromEntries(VOICES.map(voice => [voice.key, voice]));
+
+    const CONSONANT_WITH_BASS = new Set([0, 3, 4, 7, 8, 9]);
+    const CONSONANT_UPPER = new Set([0, 3, 4, 5, 7, 8, 9]);
+    const SUSPENSION_INTERVALS = new Set([2, 5, 10]);
+
+    const FORMANTS = {
+      a: [[690, 0.52, 4.4], [1080, 0.34, 5.2], [2380, 0.16, 7.5]],
+      e: [[500, 0.47, 4.8], [1680, 0.34, 6.0], [2480, 0.14, 7.2]],
+      i: [[310, 0.42, 5.2], [2140, 0.34, 6.5], [2920, 0.14, 8.0]],
+      o: [[470, 0.49, 4.8], [860, 0.32, 5.0], [2320, 0.13, 7.2]],
+      u: [[340, 0.38, 5.6], [760, 0.30, 5.2], [2180, 0.12, 7.2]]
+    };
+
+    const els = {
+      subtitle: document.getElementById("subtitle"),
+      regenerate: document.getElementById("regenerate"),
+      play: document.getElementById("play"),
+      stop: document.getElementById("stop"),
+      tempo: document.getElementById("tempo"),
+      tempoReadout: document.getElementById("tempoReadout"),
+      reverb: document.getElementById("reverb"),
+      reverbReadout: document.getElementById("reverbReadout"),
+      breath: document.getElementById("breath"),
+      breathReadout: document.getElementById("breathReadout"),
+      devotionalLine: document.getElementById("devotionalLine"),
+      seedPill: document.getElementById("seedPill"),
+      massPart: document.getElementById("massPart"),
+      latinText: document.getElementById("latinText"),
+      modeName: document.getElementById("modeName"),
+      finalName: document.getElementById("finalName"),
+      cantusVoice: document.getElementById("cantusVoice"),
+      cadenceName: document.getElementById("cadenceName"),
+      durationPill: document.getElementById("durationPill"),
+      texturePill: document.getElementById("texturePill"),
+      status: document.getElementById("status")
+    };
+
+    const meters = Object.fromEntries(KEYS.map(key => [key, {
+      bar: document.getElementById(`meter-${key}`),
+      note: document.getElementById(`now-${key}`)
+    }]));
+
+    const state = {
+      seed: "",
+      rng: null,
+      mode: null,
+      mass: null,
+      phrases: [],
+      voices: emptyVoices(),
+      phraseIndex: 0,
+      nextBeat: 0,
+      currentBeat: 0,
+      playing: false,
+      playBeatStart: 0,
+      playWallStart: 0,
+      scheduled: new Set(),
+      audio: null,
+      activeNodes: [],
+      raf: 0,
+      lastMetaWall: 0,
+      lastMeterWall: 0
+    };
+
+    function emptyVoices() {
+      return Object.fromEntries(KEYS.map(key => [key, []]));
+    }
+
+    function xmur3(str) {
+      let h = 1779033703 ^ str.length;
+      for (let i = 0; i < str.length; i++) {
+        h = Math.imul(h ^ str.charCodeAt(i), 3432918353);
+        h = (h << 13) | (h >>> 19);
+      }
+      return function seedHash() {
+        h = Math.imul(h ^ (h >>> 16), 2246822507);
+        h = Math.imul(h ^ (h >>> 13), 3266489909);
+        return (h ^= h >>> 16) >>> 0;
+      };
+    }
+
+    function mulberry32(seed) {
+      return function rng() {
+        let t = seed += 0x6D2B79F5;
+        t = Math.imul(t ^ (t >>> 15), t | 1);
+        t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+        return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+      };
+    }
+
+    function makeRng(seed) {
+      return mulberry32(xmur3(seed)());
+    }
+
+    function clockNow() {
+      return window.performance && typeof window.performance.now === "function"
+        ? window.performance.now()
+        : Date.now();
+    }
+
+    function pick(rng, array) {
+      return array[Math.floor(rng() * array.length)];
+    }
+
+    function randInt(rng, min, max) {
+      return min + Math.floor(rng() * (max - min + 1));
+    }
+
+    function weightedPick(rng, pairs) {
+      const total = pairs.reduce((sum, [, weight]) => sum + weight, 0);
+      let mark = rng() * total;
+      for (const [value, weight] of pairs) {
+        mark -= weight;
+        if (mark <= 0) return value;
+      }
+      return pairs[pairs.length - 1][0];
+    }
+
+    function mod(n, m) {
+      return ((n % m) + m) % m;
+    }
+
+    function signed(n) {
+      return n === 0 ? 0 : n > 0 ? 1 : -1;
+    }
+
+    function degreeToMidi(mode, degree) {
+      const octave = Math.floor(degree / 7);
+      const index = mod(degree, 7);
+      return mode.finalMidi + octave * 12 + mode.intervals[index];
+    }
+
+    function midiToHz(midi) {
+      return 440 * Math.pow(2, (midi - 69) / 12);
+    }
+
+    function midiName(midi) {
+      return `${NOTE_NAMES[mod(midi, 12)]}${Math.floor(midi / 12) - 1}`;
+    }
+
+    function simpleInterval(a, b) {
+      return mod(Math.abs(a - b), 12);
+    }
+
+    function voiceDegreeLimits(mode, voice) {
+      const degrees = [];
+      for (let degree = -24; degree <= 24; degree++) {
+        const midi = degreeToMidi(mode, degree);
+        if (midi >= voice.min && midi <= voice.max) degrees.push(degree);
+      }
+      return { min: Math.min(...degrees), max: Math.max(...degrees) };
+    }
+
+    function isTritone(mode, a, b) {
+      return simpleInterval(degreeToMidi(mode, a), degreeToMidi(mode, b)) === 6;
+    }
+
+    function melodicIntervalOk(mode, a, b, maxSemitones = 7) {
+      const semitones = Math.abs(degreeToMidi(mode, a) - degreeToMidi(mode, b));
+      return semitones <= maxSemitones && semitones !== 6;
+    }
+
+    function resetStream(keepPlaying = false) {
+      const wasPlaying = keepPlaying && state.playing;
+      if (state.playing) pause(false);
+      stopAudioNodes();
+      state.seed = String(Math.floor(Date.now() % 3999) + 1);
+      state.rng = makeRng(state.seed);
+      state.mode = pick(state.rng, MODES);
+      state.mass = pick(state.rng, MASS_PARTS);
+      state.phrases = [];
+      state.voices = emptyVoices();
+      state.phraseIndex = 0;
+      state.nextBeat = 0;
+      state.currentBeat = 0;
+      state.playBeatStart = 0;
+      state.playWallStart = 0;
+      state.scheduled = new Set();
+      composeAhead(112);
+      renderMeta(true);
+      setStatus();
+      if (wasPlaying) play();
+    }
+
+    function composeAhead(targetBeat) {
+      while (state.nextBeat < targetBeat) {
+        const phrase = generatePhrase(state.nextBeat);
+        state.phrases.push(phrase);
+        for (const key of KEYS) {
+          state.voices[key].push(...phrase.events[key]);
+        }
+        state.nextBeat = phrase.endBeat;
+        state.phraseIndex += 1;
+      }
+      trimPast(Math.max(0, getCurrentBeat() - 20));
+    }
+
+    function trimPast(beforeBeat) {
+      if (beforeBeat <= 0) return;
+      state.phrases = state.phrases.filter(phrase => phrase.endBeat > beforeBeat);
+      for (const key of KEYS) {
+        state.voices[key] = state.voices[key].filter(event => event.startBeat + event.duration > beforeBeat);
+      }
+      for (const id of state.scheduled) {
+        const stillExists = KEYS.some(key => state.voices[key].some(event => event.id === id));
+        if (!stillExists) state.scheduled.delete(id);
+      }
+    }
+
+    function generatePhrase(startBeat) {
+      const rng = state.rng;
+      if (state.phraseIndex > 0 && rng() < 0.24) state.mass = pick(rng, MASS_PARTS);
+      let lastDraft = null;
+
+      for (let attempt = 0; attempt < 40; attempt++) {
+        const measures = randInt(rng, 7, 12);
+        const cantus = generateCantus(state.mode, rng, measures, state.phraseIndex + attempt);
+        const skeletonResult = generateSkeleton(state.mode, cantus, rng);
+        const phrase = {
+          id: `p${state.phraseIndex}`,
+          index: state.phraseIndex,
+          startBeat,
+          endBeat: startBeat + measures * 4,
+          measures,
+          mode: state.mode,
+          mass: state.mass,
+          cantus,
+          skeleton: skeletonResult.skeleton,
+          roots: skeletonResult.roots,
+          stats: skeletonResult.stats,
+          events: emptyVoices()
+        };
+        lastDraft = phrase;
+        if (!skeletonPassesRules(phrase.skeleton)) continue;
+        phrase.events = makeEvents(phrase, rng);
+        phrase.stats.notes = KEYS.reduce((sum, key) => sum + phrase.events[key].length, 0);
+        phrase.stats.range = Math.max(...cantus) - Math.min(...cantus);
+        phrase.stats.redrafts = attempt;
+        return phrase;
+      }
+
+      lastDraft.events = makeEvents(lastDraft, rng);
+      lastDraft.stats.notes = KEYS.reduce((sum, key) => sum + lastDraft.events[key].length, 0);
+      lastDraft.stats.range = Math.max(...lastDraft.cantus) - Math.min(...lastDraft.cantus);
+      lastDraft.stats.redrafts = 40;
+      return lastDraft;
+    }
+
+    function skeletonPassesRules(skeleton) {
+      let prev = null;
+      for (let slot = 0; slot < skeleton[CF_KEY].length; slot++) {
+        const current = Object.fromEntries(KEYS.map(key => [key, {
+          degree: skeleton[key][slot].degree,
+          midi: skeleton[key][slot].midi
+        }]));
+        if (!(current.bass.midi < current.tenor.midi && current.tenor.midi < current.alto.midi && current.alto.midi < current.soprano.midi)) return false;
+        if (!structuralConsonance(current)) return false;
+        if (hasParallelPerfect(prev, current)) return false;
+        if (hasHiddenOuterPerfect(prev, current)) return false;
+        prev = current;
+      }
+      return true;
+    }
+
+    function generateCantus(mode, rng, measures, phraseIndex) {
+      const limits = voiceDegreeLimits(mode, VOICE_BY_KEY[CF_KEY]);
+      const low = Math.max(-5, limits.min);
+      const high = Math.min(8, limits.max);
+      const penults = [1, -1].filter(degree => degree >= low && degree <= high);
+      const archetype = phraseIndex % 5;
+      let best = null;
+      let bestScore = -Infinity;
+
+      for (let attempt = 0; attempt < 900; attempt++) {
+        const seq = [0];
+        const apexAt = randInt(rng, Math.max(2, Math.floor(measures * 0.34)), Math.max(3, Math.floor(measures * 0.72)));
+        const apexTarget = Math.min(high, Math.max(mode.reciting + 1, weightedPick(rng, [[5, 3], [6, 5], [7, 3], [8, 1]])));
+        const reciting = Math.min(high, Math.max(low, mode.reciting + (rng() < 0.35 ? -1 : 0)));
+        let previousLeap = 0;
+
+        for (let i = 1; i < measures - 2; i++) {
+          const current = seq[seq.length - 1];
+          let moves = previousLeap
+            ? [[-signed(previousLeap), 9], [-2 * signed(previousLeap), 3]]
+            : [[1, 8], [-1, 8], [2, 4.5], [-2, 4.2], [3, 1.8], [-3, 1.6], [4, 0.75], [-4, 0.6], [5, 0.22], [-5, 0.18]];
+
+          let candidates = moves
+            .map(([move, weight]) => [current + move, weight])
+            .filter(([next]) => next >= low && next <= high)
+            .filter(([next]) => melodicIntervalOk(mode, current, next, 7));
+
+          candidates = candidates.map(([next, weight]) => {
+            let w = weight;
+            if (i < apexAt) w *= next > current ? 1.35 : 0.82;
+            if (i > apexAt) w *= next < current ? 1.28 : 0.84;
+            if (Math.abs(next - reciting) <= 1 && archetype === 1) w *= 1.45;
+            if (i === apexAt && next === apexTarget) w *= 4;
+            if (archetype === 2 && i > 2 && i < measures - 4 && next === seq[i - 2] + 1) w *= 1.55;
+            if (archetype === 3 && i < apexAt && next < current) w *= 1.24;
+            if (archetype === 4 && i > apexAt && next > current) w *= 1.18;
+            return [next, Math.max(0.05, w)];
+          });
+
+          if (Math.abs(i - apexAt) <= 1) candidates.push([apexTarget, 5]);
+          const next = weightedPick(rng, candidates);
+          previousLeap = Math.abs(next - current) > 2 ? next - current : 0;
+          seq.push(next);
+        }
+
+        seq.push(penults.length > 1 && rng() < 0.22 ? -1 : penults[0], 0);
+        const score = scoreCantus(mode, seq, apexAt, apexTarget);
+        if (score > bestScore) {
+          bestScore = score;
+          best = seq;
+        }
+      }
+
+      return best || fallbackCantus(measures);
+    }
+
+    function fallbackCantus(measures) {
+      const core = [0, 1, 3, 4, 5, 3, 2, 1, 0];
+      const seq = [];
+      for (let i = 0; i < measures - 2; i++) seq.push(core[Math.min(i, core.length - 3)]);
+      seq.push(1, 0);
+      return seq.slice(0, measures);
+    }
+
+    function scoreCantus(mode, seq, apexAt, apexTarget) {
+      let score = 0;
+      const high = Math.max(...seq);
+      const low = Math.min(...seq);
+      const range = high - low;
+      const apexIndex = seq.indexOf(high);
+      const apexCount = seq.filter(note => note === high).length;
+      let steps = 0;
+      let leaps = 0;
+      let recovered = 0;
+      let directionChanges = 0;
+      let repeatedRuns = 0;
+
+      score += 34 - Math.abs(range - 7) * 4.2;
+      score += apexCount === 1 ? 24 : -14 * apexCount;
+      score += 18 - Math.abs(apexIndex - apexAt) * 1.5;
+      score += high >= apexTarget - 1 ? 10 : -8;
+      score += low < 0 ? 5 : 0;
+
+      for (let i = 1; i < seq.length; i++) {
+        const diff = seq[i] - seq[i - 1];
+        const prevDiff = i > 1 ? seq[i - 1] - seq[i - 2] : 0;
+        if (Math.abs(diff) <= 2) steps++;
+        if (Math.abs(diff) > 2) {
+          leaps++;
+          const nextDiff = seq[i + 1] == null ? 0 : seq[i + 1] - seq[i];
+          if (nextDiff && signed(nextDiff) === -signed(diff) && Math.abs(nextDiff) <= 2) recovered++;
+          if (Math.abs(diff) > 5) score -= 14;
+        }
+        if (!melodicIntervalOk(mode, seq[i - 1], seq[i], 7)) score -= 30;
+        if (prevDiff && diff && signed(prevDiff) !== signed(diff)) directionChanges++;
+        if (i > 1 && seq[i] === seq[i - 1] && seq[i - 1] === seq[i - 2]) repeatedRuns++;
+      }
+
+      score += steps * 1.7;
+      score += Math.min(leaps, 2) * 5;
+      score += recovered * 7;
+      score -= Math.max(0, leaps - recovered) * 10;
+      score += Math.min(directionChanges, 5) * 2.2;
+      score -= repeatedRuns * 12;
+      score += Math.abs(seq[seq.length - 2]) === 1 ? 18 : -12;
+      score += seq[0] === 0 && seq[seq.length - 1] === 0 ? 18 : -30;
+      return score;
+    }
+
+    function generateSkeleton(mode, cantus, rng) {
+      const slots = cantus.length * 2;
+      const skeleton = emptyVoices();
+      const roots = [];
+      const stats = { rejected: 0, parallelsAvoided: 0, hiddenAvoided: 0 };
+      let prevRoot = null;
+      let prev = null;
+
+      for (let slot = 0; slot < slots; slot++) {
+        const measure = Math.floor(slot / 2);
+        const cfDegree = cantus[measure];
+        let root = chooseRoot(mode, cfDegree, prevRoot, slot, slots, rng);
+        if (!chordContains(root, cfDegree)) root = cfDegree;
+        const voicing = chooseVoicing(mode, cfDegree, root, prev, slot, slots, rng, stats);
+        roots.push(root);
+        for (const key of KEYS) {
+          skeleton[key].push({
+            startBeat: slot * 2,
+            duration: 2,
+            degree: voicing[key].degree,
+            midi: voicing[key].midi,
+            root
+          });
+        }
+        prevRoot = root;
+        prev = voicing;
+      }
+
+      return { skeleton, roots, stats };
+    }
+
+    function chooseRoot(mode, cfDegree, prevRoot, slot, slots, rng) {
+      if (slot >= slots - 1) return 0;
+      if (slot >= slots - 3) return 4;
+      const candidates = [cfDegree, cfDegree - 2, cfDegree - 4]
+        .map(root => root > 4 ? root - 7 : root < -4 ? root + 7 : root);
+      const weighted = candidates.map(root => {
+        let weight = 3.8;
+        if (root === 0) weight += 1.4;
+        if (root === 3 || root === 4) weight += 1.1;
+        if (prevRoot != null) weight += Math.max(0, 4 - Math.abs(root - prevRoot)) * 0.72;
+        if (root === prevRoot && slot % 2 === 0) weight *= 0.72;
+        return [root, Math.max(0.2, weight)];
+      });
+      return weightedPick(rng, weighted);
+    }
+
+    function chordResidues(root) {
+      return new Set([mod(root, 7), mod(root + 2, 7), mod(root + 4, 7)]);
+    }
+
+    function chordContains(root, degree) {
+      return chordResidues(root).has(mod(degree, 7));
+    }
+
+    function candidatesFor(mode, voice, residues, lowerMidi, upperMidi) {
+      const list = [];
+      for (let degree = -22; degree <= 26; degree++) {
+        const midi = degreeToMidi(mode, degree);
+        if (midi < voice.min || midi > voice.max) continue;
+        if (!residues.has(mod(degree, 7))) continue;
+        if (lowerMidi != null && midi <= lowerMidi) continue;
+        if (upperMidi != null && midi >= upperMidi) continue;
+        list.push({ degree, midi });
+      }
+      return list;
+    }
+
+    function chooseVoicing(mode, cfDegree, root, prev, slot, slots, rng, stats) {
+      const residues = chordResidues(root);
+      const tenor = { degree: cfDegree, midi: degreeToMidi(mode, cfDegree) };
+      const basses = candidatesFor(mode, VOICE_BY_KEY.bass, residues, null, tenor.midi - 4);
+      const altos = candidatesFor(mode, VOICE_BY_KEY.alto, residues, tenor.midi + 2, null);
+      const sopranos = candidatesFor(mode, VOICE_BY_KEY.soprano, residues, tenor.midi + 7, null);
+      const finalists = [];
+
+      for (const bass of basses) {
+        for (const alto of altos) {
+          if (alto.midi <= tenor.midi + 2) continue;
+          for (const soprano of sopranos) {
+            if (soprano.midi <= alto.midi + 2) continue;
+            const current = { soprano, alto, tenor, bass };
+            if (!structuralConsonance(current)) {
+              stats.rejected += 1;
+              continue;
+            }
+            if (hasParallelPerfect(prev, current)) {
+              stats.parallelsAvoided += 1;
+              continue;
+            }
+            if (hasHiddenOuterPerfect(prev, current)) {
+              stats.hiddenAvoided += 1;
+              continue;
+            }
+            if (!melodicMotionOk(mode, prev, current)) continue;
+            finalists.push([current, scoreVoicing(prev, current, root, slot, slots)]);
+          }
+        }
+      }
+
+      if (!finalists.length) return fallbackVoicing(mode, cfDegree, root, prev);
+      finalists.sort((a, b) => b[1] - a[1]);
+      const elite = finalists.slice(0, Math.min(20, finalists.length));
+      const floor = elite[elite.length - 1][1];
+      return weightedPick(rng, elite.map(([candidate, score], index) => [
+        candidate,
+        Math.max(0.25, score - floor + 2.5 + (elite.length - index) * 0.06)
+      ]));
+    }
+
+    function structuralConsonance(voicing) {
+      const bass = voicing.bass.midi;
+      for (const key of ["tenor", "alto", "soprano"]) {
+        if (!CONSONANT_WITH_BASS.has(simpleInterval(bass, voicing[key].midi))) return false;
+      }
+      for (const [a, b] of [["tenor", "alto"], ["tenor", "soprano"], ["alto", "soprano"]]) {
+        if (!CONSONANT_UPPER.has(simpleInterval(voicing[a].midi, voicing[b].midi))) return false;
+      }
+      return true;
+    }
+
+    function hasParallelPerfect(prev, current) {
+      if (!prev) return false;
+      for (let i = 0; i < KEYS.length; i++) {
+        for (let j = i + 1; j < KEYS.length; j++) {
+          const a = KEYS[i];
+          const b = KEYS[j];
+          const prevInt = simpleInterval(prev[a].midi, prev[b].midi);
+          const nextInt = simpleInterval(current[a].midi, current[b].midi);
+          const perfectBefore = prevInt === 0 || prevInt === 7;
+          const perfectAfter = nextInt === 0 || nextInt === 7;
+          const moveA = signed(current[a].midi - prev[a].midi);
+          const moveB = signed(current[b].midi - prev[b].midi);
+          if (perfectBefore && perfectAfter && moveA !== 0 && moveA === moveB) return true;
+        }
+      }
+      return false;
+    }
+
+    function hasHiddenOuterPerfect(prev, current) {
+      if (!prev) return false;
+      const interval = simpleInterval(current.soprano.midi, current.bass.midi);
+      if (interval !== 0 && interval !== 7) return false;
+      const sopMove = current.soprano.midi - prev.soprano.midi;
+      const bassMove = current.bass.midi - prev.bass.midi;
+      return sopMove && bassMove && signed(sopMove) === signed(bassMove) && Math.abs(sopMove) > 2;
+    }
+
+    function melodicMotionOk(mode, prev, current) {
+      if (!prev) return true;
+      for (const key of KEYS) {
+        const leap = Math.abs(current[key].degree - prev[key].degree);
+        const semitones = Math.abs(current[key].midi - prev[key].midi);
+        if (leap > 5) return false;
+        if (semitones > 8 || semitones === 6) return false;
+      }
+      return true;
+    }
+
+    function scoreVoicing(prev, current, root, slot, slots) {
+      let score = 0;
+      for (const key of KEYS) {
+        const voice = VOICE_BY_KEY[key];
+        score -= Math.abs(current[key].midi - voice.center) * 0.12;
+        if (prev) {
+          const leap = Math.abs(current[key].degree - prev[key].degree);
+          score += leap <= 1 ? 5.2 : leap === 2 ? 2.4 : -leap * 1.9;
+        }
+      }
+      if (mod(current.bass.degree - root, 7) === 0) score += 8;
+      if (mod(current.bass.degree - (root + 4), 7) === 0) score += 2;
+      const residues = new Set(KEYS.map(key => mod(current[key].degree, 7)));
+      for (const residue of chordResidues(root)) if (residues.has(residue)) score += 2.8;
+
+      const sa = current.soprano.midi - current.alto.midi;
+      const at = current.alto.midi - current.tenor.midi;
+      const tb = current.tenor.midi - current.bass.midi;
+      if (sa > 12) score -= (sa - 12) * 2.3;
+      if (at > 12) score -= (at - 12) * 2.3;
+      if (tb > 19) score -= (tb - 19) * 1.5;
+      if (sa < 3 || at < 3 || tb < 5) score -= 12;
+
+      if (prev) {
+        const tenorMotion = current.tenor.midi - prev.tenor.midi;
+        for (const key of ["soprano", "alto", "bass"]) {
+          const motion = current[key].midi - prev[key].midi;
+          if (tenorMotion && motion && signed(tenorMotion) !== signed(motion)) score += 2.1;
+        }
+      }
+
+      if (slot >= slots - 2) {
+        score += mod(current.bass.degree, 7) === 0 ? 14 : -10;
+        score += mod(current.soprano.degree, 7) === 0 ? 8 : 0;
+      }
+      return score;
+    }
+
+    function fallbackVoicing(mode, cfDegree, root, prev) {
+      const residues = chordResidues(root);
+      const tenor = { degree: cfDegree, midi: degreeToMidi(mode, cfDegree) };
+      let best = null;
+      let bestScore = -Infinity;
+
+      for (const requireMelodic of [true, false]) {
+        for (const chordOnly of [true, false]) {
+          const basses = relaxedCandidates(mode, VOICE_BY_KEY.bass, residues, null, tenor.midi - 3, chordOnly);
+          const altos = relaxedCandidates(mode, VOICE_BY_KEY.alto, residues, tenor.midi + 1, null, chordOnly);
+          const sopranos = relaxedCandidates(mode, VOICE_BY_KEY.soprano, residues, tenor.midi + 4, null, chordOnly);
+
+          for (const bass of basses) {
+            for (const alto of altos) {
+              if (alto.midi <= tenor.midi + 1) continue;
+              for (const soprano of sopranos) {
+                if (soprano.midi <= alto.midi + 1) continue;
+                const current = { soprano, alto, tenor, bass };
+                if (!structuralConsonance(current)) continue;
+                if (hasParallelPerfect(prev, current)) continue;
+                if (hasHiddenOuterPerfect(prev, current)) continue;
+                if (requireMelodic && !melodicMotionOk(mode, prev, current)) continue;
+                const score = scoreVoicing(prev, current, root, 0, 1) - (chordOnly ? 0 : 7) - (requireMelodic ? 0 : 9);
+                if (score > bestScore) {
+                  bestScore = score;
+                  best = current;
+                }
+              }
+            }
+          }
+          if (best) return best;
+        }
+      }
+
+      const bass = nearestCandidate(mode, VOICE_BY_KEY.bass, residues, prev?.bass?.midi ?? tenor.midi - 12, null, tenor.midi - 4);
+      const alto = nearestCandidate(mode, VOICE_BY_KEY.alto, residues, prev?.alto?.midi ?? tenor.midi + 7, tenor.midi + 2, null);
+      const soprano = nearestCandidate(mode, VOICE_BY_KEY.soprano, residues, prev?.soprano?.midi ?? alto.midi + 7, alto.midi + 2, null);
+      return { soprano, alto, tenor, bass };
+    }
+
+    function relaxedCandidates(mode, voice, residues, lowerMidi, upperMidi, chordOnly) {
+      const list = [];
+      for (let degree = -22; degree <= 26; degree++) {
+        const midi = degreeToMidi(mode, degree);
+        if (midi < voice.min || midi > voice.max) continue;
+        if (chordOnly && !residues.has(mod(degree, 7))) continue;
+        if (lowerMidi != null && midi <= lowerMidi) continue;
+        if (upperMidi != null && midi >= upperMidi) continue;
+        list.push({ degree, midi });
+      }
+      return list;
+    }
+
+    function nearestCandidate(mode, voice, residues, target, lowerMidi, upperMidi) {
+      let list = candidatesFor(mode, voice, residues, lowerMidi, upperMidi);
+      if (!list.length) list = candidatesFor(mode, voice, residues, null, null);
+      if (!list.length) {
+        for (let degree = -22; degree <= 26; degree++) {
+          const midi = degreeToMidi(mode, degree);
+          if (midi >= voice.min && midi <= voice.max) list.push({ degree, midi });
+        }
+      }
+      return list.sort((a, b) => Math.abs(a.midi - target) - Math.abs(b.midi - target))[0];
+    }
+
+    function makeEvents(phrase, rng) {
+      const events = emptyVoices();
+      for (const key of KEYS) {
+        if (key === CF_KEY) {
+          for (let m = 0; m < phrase.cantus.length; m++) {
+            const syllable = syllableFor(phrase.mass, m * 2 + 2);
+            events[key].push(makeEvent(phrase, key, m, 0, phrase.startBeat + m * 4, 4, phrase.cantus[m], syllable, { cantus: true }));
+          }
+          continue;
+        }
+
+        const line = phrase.skeleton[key];
+        for (let i = 0; i < line.length; i++) {
+          const note = line[i];
+          const next = line[i + 1];
+          const prev = line[i - 1];
+          const absoluteStart = phrase.startBeat + note.startBeat;
+          const syllable = syllableFor(phrase.mass, i + (key === "soprano" ? 0 : key === "alto" ? 2 : 4));
+
+          const bassAtSlot = phrase.skeleton.bass[i]?.midi ?? phrase.skeleton.bass[Math.max(0, i - 1)].midi;
+          const canSuspend = prev
+            && note.startBeat % 4 === 0
+            && prev.degree === note.degree + 1
+            && isPreparedSuspension(phrase.mode, prev.degree, note.degree, bassAtSlot)
+            && rng() < 0.36;
+
+          if (canSuspend) {
+            events[key].push(makeEvent(phrase, key, i, 0, absoluteStart, 1, prev.degree, syllable, { suspension: true }));
+            events[key].push(makeEvent(phrase, key, i, 1, absoluteStart + 1, 1, note.degree, tieSyllable(syllable), { resolution: true }));
+            continue;
+          }
+
+          if (next && Math.abs(next.degree - note.degree) === 2 && rng() < 0.78) {
+            const passingDegree = note.degree + signed(next.degree - note.degree);
+            events[key].push(makeEvent(phrase, key, i, 0, absoluteStart, 1.05, note.degree, syllable, {}));
+            events[key].push(makeEvent(phrase, key, i, 1, absoluteStart + 1.05, 0.95, passingDegree, tieSyllable(syllable), { passing: true }));
+          } else if (next && next.degree === note.degree && rng() < 0.22) {
+            const neighbor = note.degree + (rng() < 0.5 ? 1 : -1);
+            const neighborMidi = degreeToMidi(phrase.mode, neighbor);
+            const voice = VOICE_BY_KEY[key];
+            if (neighborMidi >= voice.min && neighborMidi <= voice.max && !isTritone(phrase.mode, note.degree, neighbor)) {
+              events[key].push(makeEvent(phrase, key, i, 0, absoluteStart, 0.78, note.degree, syllable, {}));
+              events[key].push(makeEvent(phrase, key, i, 1, absoluteStart + 0.78, 0.58, neighbor, tieSyllable(syllable), { passing: true }));
+              events[key].push(makeEvent(phrase, key, i, 2, absoluteStart + 1.36, 0.64, note.degree, tieSyllable(syllable), {}));
+            } else {
+              events[key].push(makeEvent(phrase, key, i, 0, absoluteStart, 2, note.degree, syllable, {}));
+            }
+          } else {
+            events[key].push(makeEvent(phrase, key, i, 0, absoluteStart, 2, note.degree, syllable, {}));
+          }
+        }
+      }
+      return events;
+    }
+
+    function isPreparedSuspension(mode, heldDegree, targetDegree, bassMidi) {
+      const heldMidi = degreeToMidi(mode, heldDegree);
+      const targetMidi = degreeToMidi(mode, targetDegree);
+      return SUSPENSION_INTERVALS.has(simpleInterval(heldMidi, bassMidi))
+        && CONSONANT_WITH_BASS.has(simpleInterval(targetMidi, bassMidi));
+    }
+
+    function makeEvent(phrase, key, index, sub, startBeat, duration, degree, syllable, flags) {
+      return {
+        id: `${phrase.id}-${key}-${index}-${sub}`,
+        phraseId: phrase.id,
+        voice: key,
+        startBeat,
+        duration,
+        degree,
+        midi: degreeToMidi(phrase.mode, degree),
+        syllable,
+        vowel: vowelFor(syllable),
+        ...flags
+      };
+    }
+
+    function syllableFor(mass, index) {
+      return mass.syllables[mod(index, mass.syllables.length)];
+    }
+
+    function tieSyllable(syllable) {
+      return syllable;
+    }
+
+    function vowelFor(syllable) {
+      const match = syllable.toLowerCase().match(/[aeiouy]+/g);
+      if (!match) return "a";
+      const vowel = match[match.length - 1].replace("y", "i").slice(-1);
+      return FORMANTS[vowel] ? vowel : "a";
+    }
+
+    function currentPhrase() {
+      const beat = getCurrentBeat();
+      return state.phrases.find(phrase => beat >= phrase.startBeat && beat < phrase.endBeat) || state.phrases[0];
+    }
+
+    function getCurrentBeat() {
+      if (!state.playing) return state.currentBeat;
+      const beatSeconds = 60 / Number(els.tempo.value);
+      return state.playBeatStart + Math.max(0, clockNow() - state.playWallStart) / 1000 / beatSeconds;
+    }
+
+    function updateTempoReadout() {
+      els.tempoReadout.textContent = els.tempo.value;
+      els.reverbReadout.textContent = `${els.reverb.value}%`;
+      els.breathReadout.textContent = `${els.breath.value}%`;
+      if (state.audio) state.audio.wet.gain.setTargetAtTime(Number(els.reverb.value) / 100, state.audio.ctx.currentTime, 0.12);
+    }
+
+    function toRoman(value) {
+      let number = Math.max(1, Math.min(3999, Math.floor(Number(value) || 1)));
+      const numerals = [
+        [1000, "M"], [900, "CM"], [500, "D"], [400, "CD"],
+        [100, "C"], [90, "XC"], [50, "L"], [40, "XL"],
+        [10, "X"], [9, "IX"], [5, "V"], [4, "IV"], [1, "I"]
+      ];
+      let result = "";
+      for (const [amount, symbol] of numerals) {
+        while (number >= amount) {
+          result += symbol;
+          number -= amount;
+        }
+      }
+      return result;
+    }
+
+    function renderMeta(force = false) {
+      const now = clockNow();
+      if (!force && now - state.lastMetaWall < 1500) return;
+      state.lastMetaWall = now;
+      const phrase = currentPhrase();
+      const massName = phrase?.mass.name || state.mass.name;
+      const seedName = `Ordo ${toRoman(state.seed)}`;
+      els.devotionalLine.textContent = `${seedName} · ${massName}`;
+      els.seedPill.textContent = seedName;
+      els.massPart.textContent = massName;
+      els.latinText.textContent = phrase?.mass.text || state.mass.text;
+      els.modeName.textContent = state.mode.name;
+      els.finalName.textContent = state.mode.final;
+      els.cantusVoice.textContent = "Tenor";
+      els.cadenceName.textContent = `${state.phrases.length} phrases`;
+      els.subtitle.textContent = "ad honorem Sanctae Veronicae Giuliani";
+      els.durationPill.textContent = state.playing ? "streaming" : "ready";
+      updateTempoReadout();
+    }
+
+    function updateMeters(beat) {
+      const now = clockNow();
+      if (now - state.lastMeterWall < 180) return;
+      state.lastMeterWall = now;
+      for (const voice of VOICES) {
+        const active = state.voices[voice.key].find(event => beat >= event.startBeat && beat < event.startBeat + event.duration);
+        if (active) {
+          const age = (beat - active.startBeat) / active.duration;
+          meters[voice.key].note.textContent = midiName(active.midi);
+          meters[voice.key].bar.style.width = `${Math.max(18, (1 - age * 0.55) * 100)}%`;
+        } else {
+          meters[voice.key].note.textContent = "--";
+          meters[voice.key].bar.style.width = "0%";
+        }
+      }
+    }
+
+    function setStatus() {
+      els.status.textContent = "";
+    }
+
+    function initAudio() {
+      if (state.audio) return state.audio;
+      const AudioContext = window.AudioContext || window.webkitAudioContext;
+      if (!AudioContext) return null;
+
+      const ctx = new AudioContext();
+      const master = ctx.createGain();
+      const dry = ctx.createGain();
+      const wet = ctx.createGain();
+      const convolver = ctx.createConvolver();
+      const lowpass = ctx.createBiquadFilter();
+      const highpass = ctx.createBiquadFilter();
+      const compressor = ctx.createDynamicsCompressor();
+
+      convolver.buffer = makeImpulse(ctx, 6.2);
+      dry.gain.value = 0.46;
+      wet.gain.value = Number(els.reverb.value) / 100;
+      master.gain.value = 0.86;
+      lowpass.type = "lowpass";
+      lowpass.frequency.value = 5200;
+      lowpass.Q.value = 0.55;
+      highpass.type = "highpass";
+      highpass.frequency.value = 70;
+      compressor.threshold.value = -23;
+      compressor.knee.value = 26;
+      compressor.ratio.value = 2.0;
+      compressor.attack.value = 0.035;
+      compressor.release.value = 0.38;
+
+      dry.connect(highpass);
+      wet.connect(convolver);
+      convolver.connect(highpass);
+      highpass.connect(lowpass);
+      lowpass.connect(compressor);
+      compressor.connect(master);
+      master.connect(ctx.destination);
+
+      state.audio = { ctx, dry, wet };
+      return state.audio;
+    }
+
+    function makeImpulse(ctx, seconds) {
+      const rate = ctx.sampleRate;
+      const length = Math.floor(rate * seconds);
+      const buffer = ctx.createBuffer(2, length, rate);
+      for (let channel = 0; channel < 2; channel++) {
+        const data = buffer.getChannelData(channel);
+        for (let i = 0; i < length; i++) {
+          const t = i / length;
+          const early = i < rate * 0.055 ? 0.42 : 1;
+          data[i] = (Math.random() * 2 - 1) * Math.pow(1 - t, 3.3) * early;
+        }
+      }
+      return buffer;
+    }
+
+    function play() {
+      if (state.playing) {
+        pause();
+        return;
+      }
+      composeAhead(state.currentBeat + 112);
+      const audio = initAudio();
+      if (audio && audio.ctx.state === "suspended") {
+        audio.ctx.resume().catch(error => console.warn("Audio resume blocked.", error));
+      }
+      stopAudioNodes();
+      state.scheduled = new Set();
+      state.playing = true;
+      state.playBeatStart = state.currentBeat;
+      state.playWallStart = clockNow();
+      els.play.textContent = "Ⅱ";
+      els.play.title = "Pause";
+      els.play.setAttribute("aria-label", "Pause");
+      setStatus();
+      scheduleAhead(state.currentBeat);
+      tick();
+    }
+
+    function pause(updateBeat = true) {
+      if (!state.playing) return;
+      if (updateBeat) state.currentBeat = getCurrentBeat();
+      state.playing = false;
+      state.playBeatStart = state.currentBeat;
+      state.playWallStart = 0;
+      stopAudioNodes();
+      state.scheduled = new Set();
+      els.play.textContent = "▶";
+      els.play.title = "Play";
+      els.play.setAttribute("aria-label", "Play");
+      cancelAnimationFrame(state.raf);
+      renderMeta(true);
+      updateMeters(state.currentBeat);
+      setStatus();
+    }
+
+    function stop() {
+      pause(false);
+      state.currentBeat = 0;
+      state.playBeatStart = 0;
+      state.playWallStart = 0;
+      state.scheduled = new Set();
+      stopAudioNodes();
+      renderMeta(true);
+      updateMeters(0);
+      setStatus();
+    }
+
+    function tick() {
+      if (!state.playing) return;
+      const beat = getCurrentBeat();
+      state.currentBeat = beat;
+      renderMeta();
+      updateMeters(beat);
+      state.raf = requestAnimationFrame(tick);
+    }
+
+    function scheduleAhead(beat) {
+      const audio = state.audio;
+      if (!audio) return;
+      pruneAudioRecords();
+      const beatSeconds = 60 / Number(els.tempo.value);
+      const horizon = beat + AUDIO_LOOKAHEAD_SECONDS / beatSeconds;
+
+      for (const voice of VOICES) {
+        for (const event of state.voices[voice.key]) {
+          if (state.scheduled.has(event.id)) continue;
+          if (event.startBeat + event.duration <= beat - 0.2) continue;
+          if (event.startBeat > horizon) continue;
+          const clippedStart = Math.max(event.startBeat, beat);
+          const when = audio.ctx.currentTime + Math.max(0.05, (clippedStart - beat) * beatSeconds);
+          const duration = Math.max(0.08, (event.startBeat + event.duration - clippedStart) * beatSeconds);
+          scheduleVocal(event, voice, when, duration);
+          state.scheduled.add(event.id);
+        }
+      }
+    }
+
+    function scheduleVocal(event, voice, when, duration) {
+      const audio = state.audio;
+      if (!audio) return;
+      const ctx = audio.ctx;
+      const f0 = midiToHz(event.midi);
+      const vowel = FORMANTS[event.vowel] || FORMANTS.a;
+      const envelope = ctx.createGain();
+      const pan = ctx.createStereoPanner();
+      const tone = ctx.createGain();
+      const body = ctx.createGain();
+      const bodyFilter = ctx.createBiquadFilter();
+      const vibrato = ctx.createOscillator();
+      const vibratoDepth = ctx.createGain();
+      const sources = [];
+      const locals = [envelope, pan, tone, body, bodyFilter, vibratoDepth];
+      const release = Math.min(0.9, Math.max(0.34, duration * 0.34));
+      const attack = Math.min(0.28, Math.max(0.09, duration * 0.2));
+      const gain = voice.gain * (event.cantus ? 1.08 : 1) * (event.passing ? 0.82 : 1);
+      const releaseStart = when + Math.max(attack + 0.04, duration - release);
+      const stopAt = when + duration + release + 0.14;
+
+      envelope.gain.setValueAtTime(0.0001, when);
+      envelope.gain.exponentialRampToValueAtTime(Math.max(0.0002, gain), when + attack);
+      envelope.gain.setTargetAtTime(gain * 0.74, when + attack, Math.max(0.2, duration * 0.48));
+      envelope.gain.setTargetAtTime(0.00001, releaseStart, release * 0.16);
+
+      pan.pan.value = voice.pan + (Math.random() - 0.5) * 0.025;
+      envelope.connect(pan);
+      pan.connect(audio.dry);
+      pan.connect(audio.wet);
+
+      vibrato.type = "sine";
+      vibrato.frequency.setValueAtTime(4.15 + Math.random() * 0.45, when);
+      vibratoDepth.gain.setValueAtTime(0, when);
+      vibratoDepth.gain.linearRampToValueAtTime(2.0 + Math.random() * 1.2, when + Math.min(1.1, duration * 0.55));
+      vibrato.connect(vibratoDepth);
+
+      const harmonicGains = [0.54, 0.24, 0.13, 0.065, 0.034, 0.018];
+      harmonicGains.forEach((amount, index) => {
+        const osc = ctx.createOscillator();
+        const hg = ctx.createGain();
+        locals.push(hg);
+        const harmonic = index + 1;
+        osc.type = "sine";
+        osc.frequency.setValueAtTime(f0 * harmonic, when);
+        osc.detune.setValueAtTime((Math.random() - 0.5) * 4.5, when);
+        vibratoDepth.connect(osc.detune);
+        hg.gain.value = amount / Math.pow(harmonic, 0.3);
+        osc.connect(hg);
+        hg.connect(tone);
+        osc.start(when);
+        osc.stop(stopAt);
+        sources.push(osc);
+      });
+
+      bodyFilter.type = "lowpass";
+      bodyFilter.frequency.value = 1550 * voice.shift;
+      bodyFilter.Q.value = 0.55;
+      body.gain.value = 0.22;
+      tone.connect(bodyFilter);
+      bodyFilter.connect(body);
+      body.connect(envelope);
+
+      for (const [freq, amount, q] of vowel) {
+        const filter = ctx.createBiquadFilter();
+        const fg = ctx.createGain();
+        locals.push(filter, fg);
+        filter.type = "bandpass";
+        filter.frequency.value = freq * voice.shift;
+        filter.Q.value = q;
+        fg.gain.value = amount;
+        tone.connect(filter);
+        filter.connect(fg);
+        fg.connect(envelope);
+      }
+
+      const breathAmount = Number(els.breath.value) / 100;
+      if (breathAmount > 0.01) {
+        const noise = makeNoise(ctx, duration + release);
+        const nf = ctx.createBiquadFilter();
+        const ng = ctx.createGain();
+        locals.push(nf, ng);
+        nf.type = "bandpass";
+        nf.frequency.value = 1600 * voice.shift;
+        nf.Q.value = 0.65;
+        ng.gain.setValueAtTime(0.0001, when);
+        ng.gain.linearRampToValueAtTime(gain * breathAmount * 0.024, when + attack);
+        ng.gain.setTargetAtTime(0.00001, releaseStart, release * 0.12);
+        noise.connect(nf);
+        nf.connect(ng);
+        ng.connect(pan);
+        noise.start(when);
+        noise.stop(stopAt);
+        sources.push(noise);
+      }
+
+      vibrato.start(when);
+      vibrato.stop(stopAt);
+      sources.push(vibrato);
+      trackAudioVoice(sources, locals, stopAt);
+    }
+
+    function makeNoise(ctx, duration) {
+      const length = Math.max(1, Math.floor(ctx.sampleRate * duration));
+      const buffer = ctx.createBuffer(1, length, ctx.sampleRate);
+      const data = buffer.getChannelData(0);
+      for (let i = 0; i < length; i++) data[i] = (Math.random() * 2 - 1) * 0.45;
+      const source = ctx.createBufferSource();
+      source.buffer = buffer;
+      return source;
+    }
+
+    function trackAudioVoice(sources, locals, stopAt) {
+      const audio = state.audio;
+      const record = { sources, locals, stopAt, done: false };
+      state.activeNodes.push(record);
+      let pending = sources.length;
+      const finish = () => {
+        pending -= 1;
+        if (pending <= 0) cleanupAudioRecord(record);
+      };
+      for (const source of sources) {
+        source.onended = finish;
+      }
+      if (audio) {
+        const delay = Math.max(50, (stopAt - audio.ctx.currentTime + 0.3) * 1000);
+        window.setTimeout(() => cleanupAudioRecord(record), delay);
+      }
+    }
+
+    function cleanupAudioRecord(record) {
+      if (!record || record.done) return;
+      record.done = true;
+      for (const node of [...record.sources, ...record.locals]) {
+        try {
+          node.disconnect();
+        } catch (error) {
+          // The node may already be disconnected.
+        }
+      }
+      const index = state.activeNodes.indexOf(record);
+      if (index !== -1) state.activeNodes.splice(index, 1);
+    }
+
+    function pruneAudioRecords() {
+      const audio = state.audio;
+      if (!audio) return;
+      const cutoff = audio.ctx.currentTime - 0.5;
+      for (const record of [...state.activeNodes]) {
+        if (record.stopAt < cutoff) cleanupAudioRecord(record);
+      }
+    }
+
+    function stopAudioNodes() {
+      for (const record of [...state.activeNodes]) {
+        for (const source of record.sources) {
+          try {
+            source.stop(0);
+          } catch (error) {
+            // Some sources may already have ended.
+          }
+        }
+        cleanupAudioRecord(record);
+      }
+      state.activeNodes = [];
+    }
+
+    els.play.addEventListener("click", play);
+    els.stop.addEventListener("click", stop);
+    els.regenerate.addEventListener("click", () => resetStream(true));
+    els.tempo.addEventListener("input", () => {
+      const beat = getCurrentBeat();
+      updateTempoReadout();
+      if (state.playing) {
+        state.currentBeat = beat;
+        stopAudioNodes();
+        state.scheduled = new Set();
+        state.playBeatStart = beat;
+        state.playWallStart = clockNow();
+      }
+    });
+    els.reverb.addEventListener("input", updateTempoReadout);
+    els.breath.addEventListener("input", updateTempoReadout);
+
+    setInterval(() => {
+      composeAhead(getCurrentBeat() + 112);
+      if (state.playing) scheduleAhead(getCurrentBeat());
+    }, SCHEDULER_INTERVAL_MS);
+
+    setInterval(() => {
+      composeAhead(getCurrentBeat() + 112);
+      if (!state.playing) {
+        renderMeta(true);
+      }
+    }, 1800);
+
+    resetStream(false);
+  </script>
+</body>
+</html>
